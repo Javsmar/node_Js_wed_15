@@ -11,6 +11,11 @@ router.get('/', function(req, res, next) {
   res.locals.esPar = (ahora.getSeconds() % 2) === 0;
   res.locals.segundoActual = ahora.getSeconds();
 
+  res.locals.usuarios = [
+    {nombre: 'Smith', edad: 32},
+    {nombre:'Jones', edad: 27}
+  ];
+
   res.render('index');
   //res.render('index', { title: 'Express' });
 });
