@@ -31,7 +31,7 @@ app.use(logger('dev'));
 app.use(express.json());
 
 // Middleware: Analiza solicitudes con datos codificados en URL.
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); //parcea el body en formato urlencoded
 
 // Middleware: Analiza cookies en las solicitudes HTTP.
 app.use(cookieParser());
@@ -48,8 +48,19 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
+// Error handler
 // Middleware: Maneja errores. Configura los detalles del error en el objeto 'res.locals'.
 app.use(function(err, req, res, next) {
+
+  // comprobar si es un error de validación
+  if(err.array){
+    const errorInfo = err.errors[0]; 
+    console.log(errorInfo)
+    err.message = `Error en ${errorInfo.location}, parametro ${errorInfo.path} ${errorInfo.msg}`
+    err.status = 422;
+  }
+
+
   // Configura el mensaje de error.
   res.locals.message = err.message;
 
