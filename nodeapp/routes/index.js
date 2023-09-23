@@ -36,7 +36,7 @@ router.get('/parametro_opcional/:numero?', (req, res, next) => {
 });
 
 // GET /producto/patalones/talla/L/color/negro
-router.get('/producto/:nombre/talla/:talla/color/:color', (req, res, next) =>{
+router.get('/producto/:nombre/talla/:talla([0-9]+)/color/:color', (req, res, next) =>{
   console.log(req.params);
   // const nombre = req.params.nombre;
   // const talla = req.params.talla;
