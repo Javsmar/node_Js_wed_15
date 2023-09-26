@@ -3,10 +3,10 @@
 // función que devuelve una promesa
 function sleep(ms) {
     return new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve(54);
-      // reject(new Error('error fatal!'));
-    }, ms)
+        setTimeout(() => {
+            resolve(54);
+            // reject(new Error('error fatal!'));
+        }, ms)
     })
 }
 
