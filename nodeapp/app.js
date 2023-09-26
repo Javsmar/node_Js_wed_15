@@ -1,6 +1,7 @@
 // Importa el módulo 'http-errors' para manejar errores HTTP.
 var createError = require('http-errors');
 
+
 // Importa el módulo 'express', que es un framework web para Node.js.
 var express = require('express');
 
@@ -12,6 +13,10 @@ var cookieParser = require('cookie-parser');
 
 // Importa el módulo 'logger' para registrar solicitudes HTTP en la consola.
 var logger = require('morgan');
+
+// Requerir el archivo connectMongoose para establecer la conexión a la base de datos
+require('./lib/connectMongoose');
+
 
 // Crea una instancia de la aplicación Express.
 var app = express();
@@ -39,7 +44,10 @@ app.use(cookieParser());
 // Middleware: Sirve archivos estáticos desde el directorio 'public'.
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Define rutas para manejar solicitudes a la raíz '/' y '/users'.
+//rutas del api
+app.use('/api/agentes', require('./routes/api/agentes'));
+
+// Define rutas para manejar solicitudes a la raíz '/' y '/users' del webside.
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 
@@ -60,6 +68,14 @@ app.use(function(err, req, res, next) {
     err.status = 422;
   }
 
+  // Configura el código de estado de respuesta (500 para errores internos del servidor).
+  res.status(err.status || 500);
+
+  // si lo que ha fallado es un apetición al api responder con un error con formato json
+  if(req.originalUrl.startsWith('/api/')){
+    res.json({error: err.message});
+    return;
+  }
 
   // Configura el mensaje de error.
   res.locals.message = err.message;
@@ -67,8 +83,7 @@ app.use(function(err, req, res, next) {
   // Configura el objeto de error solo en entorno de desarrollo.
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // Configura el código de estado de respuesta (500 para errores internos del servidor).
-  res.status(err.status || 500);
+ 
 
   // Renderiza la página de error (utilizando el motor de vistas configurado anteriormente).
   res.render('error');
